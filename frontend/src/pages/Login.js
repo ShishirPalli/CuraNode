@@ -22,7 +22,7 @@ const Login = () => {
       await login(formData.email, formData.password);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
+      setError(err.response?.data?.message || 'Sorry Login failed');
     } finally {
       setIsLoading(false);
     }
