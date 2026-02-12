@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../utils/AuthContext';
+import Loader from '../components/Loader';
 import '../styles/index.css';
 
 const Register = () => {
@@ -13,6 +14,7 @@ const Register = () => {
     department: '',
   });
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -23,11 +25,14 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setIsLoading(true);
     try {
       await register(formData);
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -39,7 +44,9 @@ const Register = () => {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundColor: '#f5f5f5', padding: '20px' }}>
+    <>
+      {isLoading && <Loader fullPage={true} text="Creating account..." type="spinner" />}
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundColor: '#f5f5f5', padding: '20px' }}>
       <div style={{ backgroundColor: 'white', padding: '40px', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)', width: '100%', maxWidth: '400px' }}>
         <h1 style={{ textAlign: 'center', marginBottom: '30px', color: '#333' }}>🏥 CURANODE</h1>
         <h2 style={{ textAlign: 'center', marginBottom: '20px', fontSize: '20px', color: '#666' }}>Register</h2>
@@ -185,12 +192,12 @@ const Register = () => {
             Register
           </button>
         </form>
-
         <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '14px', color: '#666' }}>
           Already have an account? <a href="/login" style={{ color: '#007bff', textDecoration: 'none' }}>Login</a>
         </p>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 
